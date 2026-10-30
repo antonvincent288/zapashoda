@@ -513,7 +513,7 @@ renderHome(); renderGloss(); showView('home');
 .sol-add:active{opacity:.8}
 .tb-badge.bump{animation:bump .35s ease}
 @keyframes bump{0%{transform:scale(1)}45%{transform:scale(1.4)}100%{transform:scale(1)}}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:76px;background:#1E2A37;border:1px solid var(--green);color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;z-index:99;animation:fade .18s ease;box-shadow:0 8px 24px rgba(0,0,0,.4);cursor:pointer}left:50%;transform:translateX(-50%);bottom:76px;background:#1E2A37;border:1px solid var(--green);color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;z-index:99;animation:fade .18s ease;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:76px;background:#1E2A37;border:1px solid var(--green);color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;z-index:99;animation:fade .18s ease;box-shadow:0 8px 24px rgba(0,0,0,.4);cursor:pointer}
 </style>
 <script>
 /* ---------- evTrack + переходы на сайт ---------- */
@@ -546,6 +546,8 @@ function goBack(){ if(state.view==='model'||state.view==='gloss') showView('home
 
 /* init Telegram */
 if(window.Telegram&&Telegram.WebApp){try{Telegram.WebApp.ready();Telegram.WebApp.expand();}catch(e){}}
+window.onerror=function(msg,src,line){try{var h=document.getElementById('v-home');if(h&&!h.innerHTML.trim()){h.innerHTML='<div class="card" style="border-color:var(--red)">'+'<div style="font-weight:800;margin-bottom:6px">\u26a0\ufe0f Ошибка интерфейса</div>'+'<div style="font-size:13px;color:var(--muted)">'+String(msg).slice(0,120)+' (строка '+line+')</div>'+'<button class="b-add" style="width:100%;padding:12px;margin-top:10px" onclick="location.reload()">Перезагрузить</button>'+'<button class="b-light" style="width:100%;padding:12px;margin-top:8px" onclick="openSite(\'https://zapashoda-ev.ru/\')">Открыть сайт</button>';}}catch(e){}};
+setTimeout(function(){try{var h=document.getElementById('v-home');if(h&&!h.innerHTML.trim()){h.innerHTML='<div class="card">'+'<div style="font-weight:800;margin-bottom:6px">Апп не отрисовался</div>'+'<div style="font-size:13px;color:var(--muted)">Закройте и откройте апп заново \u2014 иногда помогает кэш Telegram.</div>'+'<button class="b-add" style="width:100%;padding:12px;margin-top:10px" onclick="location.reload()">Перезагрузить</button>'+'<button class="b-light" style="width:100%;padding:12px;margin-top:8px" onclick="openSite(\'https://zapashoda-ev.ru/\')">Каталог и гайды \u2014 на сайте</button>';}}catch(e){}},3500);
 try{const _tg=window.Telegram.WebApp;if(_tg.setHeaderColor)_tg.setHeaderColor('#0E1621');if(_tg.BackButton&&_tg.onEvent)_tg.onEvent('backButtonClicked',function(){goBack();haptic('soft');});}catch(e){}
 
 </script>
