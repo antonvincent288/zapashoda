@@ -534,6 +534,14 @@ const SITE_TR={'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','�
 function slugRu(s){return s.toLowerCase().split('').map(function(c){return Object.prototype.hasOwnProperty.call(SITE_TR,c)?SITE_TR[c]:c}).join('').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');}
 function modelSiteUrl(brand,model){return 'https://zapashoda-ev.ru/models/'+slugRu(brand)+'-'+slugRu(model)+'.html';}
 function haptic(kind){try{const h=window.Telegram&&Telegram.WebApp&&Telegram.WebApp.HapticFeedback;if(h&&h.impactOccurred)h.impactOccurred(kind||'light');}catch(e){}}
+function openChannel(){
+  var url=(typeof CHANNEL_URL==='string')?CHANNEL_URL:'https://t.me/zapashoda_ev';
+  var tg=window.Telegram&&Telegram.WebApp;
+  if(tg&&tg.openTelegramLink){try{tg.openTelegramLink(url);return;}catch(e){}}
+  if(tg&&tg.openLink){try{tg.openLink(url);return;}catch(e){}}
+  if(typeof window.open==='function'){try{window.open(url,'_blank');return;}catch(e){}}
+  try{location.href=url;}catch(e){}
+}
 function openSite(url){
   haptic('light'); const tg=window.Telegram&&Telegram.WebApp; if(tg&&tg.openLink){try{tg.openLink(url);}catch(e){if(typeof window.open==='function')window.open(url,'_blank');}} else if(typeof window.open==='function'){window.open(url,'_blank');} }
 /* ---------- Таб-бар и навигация ---------- */
