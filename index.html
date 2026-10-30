@@ -103,9 +103,9 @@ main{flex:1; overflow-y:auto; padding:14px 14px 30px; scroll-behavior:smooth}
 <div id="frame">
   <header>
     <button class="hback" id="backBtn" onclick="goBack()" hidden>‹</button>
-    <div class="htitle" onclick="goHome()" style="cursor:pointer">
+    <div class="htitle" onclick="titleTap()" style="cursor:pointer">
       <div class="t1">🔋 Запас хода</div>
-      <div class="t2">гид по твоему электромобилю</div>
+      <div class="t2">гид по твоему электромобилю · v3.7.2</div>
     </div>
     <button class="hbtn" onclick="showView('gloss')">?</button>
   </header>
@@ -217,7 +217,7 @@ function gateTab(name){
   <div class="card">
     <div class="gl-name">📱 Зачем канал</div>
     <div class="gl-desc">Разборы проблем конкретных моделей, зарядка зимой, цены, новинки ввоза. Никакого спама — только практика владения EV в России.</div>
-    <button class="b-add" style="width:100%;padding:13px" onclick="openChannel();evTrack('sub_prompt_tab')">📱 Подписаться на «Запас хода»</button>
+    <button class="b-add" style="width:100%;padding:13px" onclick="openChannel();evTrack('sub_prompt_tab')">📱 Подписаться на «Запас хода»</button><div style="font-size:12px;color:var(--muted);margin-top:7px">Канал не открывается? Найди в поиске Telegram: <b>@zapashoda_ev</b></div>
     <button class="b-light" style="width:100%;padding:12px;margin-top:8px" onclick="subDone()">✓ Я подписался — открыть</button>
   </div>`;
 }
@@ -396,7 +396,7 @@ function carPage(sel,home,targetId){
       <div class="card">
         <div class="gl-name">📱 Разблокируйте полный гид</div>
         <div class="gl-desc">В канале: разборы проблем, зарядка зимой, новые модели и цены. После подписки здесь откроются разъёмы вашей машины, подбор аксессуаров — на сайте zapashoda-ev.ru.</div>
-        <button class="b-add" style="width:100%;padding:13px" onclick="openChannel();evTrack('sub_prompt')">📱 Подписаться на «Запас хода»</button>
+        <button class="b-add" style="width:100%;padding:13px" onclick="openChannel();evTrack('sub_prompt')">📱 Подписаться на «Запас хода»</button><div style="font-size:12px;color:var(--muted);margin-top:7px">Канал не открывается? Найди в поиске Telegram: <b>@zapashoda_ev</b></div>
         <button class="b-light" style="width:100%;padding:12px;margin-top:8px" onclick="subDone()">✓ Я подписался — открыть гид</button>
       </div>`;
     return;
@@ -541,6 +541,27 @@ function openChannel(){
   if(tg&&tg.openLink){try{tg.openLink(url);return;}catch(e){}}
   if(typeof window.open==='function'){try{window.open(url,'_blank');return;}catch(e){}}
   try{location.href=url;}catch(e){}
+}
+var APP_VERSION='3.7.2';
+var DIAG_N=0,DIAG_T=null;
+function titleTap(){DIAG_N++;if(DIAG_T)clearTimeout(DIAG_T);DIAG_T=setTimeout(function(){DIAG_N=0;},800);if(DIAG_N>=3){DIAG_N=0;try{haptic('medium');}catch(e){}showDiag();}else{try{goHome();}catch(e){}}}
+function showDiag(){
+  var tg=window.Telegram&&Telegram.WebApp;
+  var info=[];
+  info.push("Версия: "+APP_VERSION);
+  info.push("WebApp: "+(tg?("v"+(tg.version||"?")+" · "+tg.platform):"нет — открой из Telegram"));
+  info.push("initData: "+(tg&&tg.initData?("есть ("+tg.initData.length+")"):"нет"));
+  info.push("MODELS: "+(typeof MODELS!=="undefined"?MODELS.length:"нет"));
+  info.push("MY: "+String(MY)+" · SUB: "+String(SUB)+" · view: "+state.view);
+  info.push("openChannel: "+typeof openChannel+" · setCar: "+typeof setCar+" · renderHome: "+typeof renderHome);
+  try{info.push("car: "+String(localStorage.getItem("ev_my_car"))+" · sub: "+String(localStorage.getItem("ev_sub")));}catch(e){info.push("localStorage: недоступен");}
+  try{var ev=JSON.parse(localStorage.getItem("ev_events")||"[]");info.push("события: "+(ev.length?ev.slice(-12).map(function(x){return x.e+(x.v===null||x.v===undefined?"":":"+x.v);}).join(", "):"пусто"));}catch(e){}
+  var b="";
+  b+="<button class=\"b-add\" style=\"width:100%;padding:12px;margin-top:10px\" onclick=\"openChannel();evTrack('diag_channel')\">Тест: открыть канал</button>";
+  b+="<button class=\"b-light\" style=\"width:100%;padding:12px;margin-top:8px\" onclick=\"openSite(SITE_CATALOG_URL);evTrack('diag_site')\">Тест: открыть сайт</button>";
+  b+="<button class=\"b-light\" style=\"width:100%;padding:12px;margin-top:8px\" onclick=\"try{localStorage.clear();}catch(e){}try{localStorage.setItem('ev_sub','1');}catch(e){}SUB=true;MY=null;try{renderHome()}catch(e){}\">Сбросить данные аппа</button>";
+  b+="<button class=\"b-light\" style=\"width:100%;padding:12px;margin-top:8px\" onclick=\"try{renderHome()}catch(e){}\">Вернуться к аппу</button>";
+  document.getElementById("v-home").innerHTML="<div class=\"hero\"><div class=\"h1\">🔧 Диагностика</div><div class=\"h2\">Пришли мне текст этого экрана</div></div><div class=\"card\">"+info.map(function(x){return "<div style=\"margin:4px 0;font-size:13px;line-height:1.5;word-break:break-all\">"+x+"</div>";}).join("")+"</div><div class=\"card\">"+b+"</div>";
 }
 function openSite(url){
   haptic('light'); const tg=window.Telegram&&Telegram.WebApp; if(tg&&tg.openLink){try{tg.openLink(url);}catch(e){if(typeof window.open==='function')window.open(url,'_blank');}} else if(typeof window.open==='function'){window.open(url,'_blank');} }
